@@ -12,24 +12,38 @@ export default {
     env: Env,
     ctx: ExecutionContext
   ): Promise<Response> {
-    const acitonRequest = request.clone();
-
     const url = new URL(request.url);
     const workerAction: Actions =
       (url.pathname.split("/").pop() as Actions) || "";
 
     switch (workerAction) {
       case "get-user": {
-        return getUser(acitonRequest, env);
+        if (request.method !== "POST") {
+          return new Response("Bad Request", { status: 405 });
+        }
+
+        return getUser(request, env);
       }
       case "activate-mission": {
-        return activateMission(acitonRequest, env);
+        if (request.method !== "PATCH") {
+          return new Response("Bad Request", { status: 405 });
+        }
+
+        return activateMission(request, env);
       }
       case "update-avatar": {
-        return updateAvatar(acitonRequest, env);
+        if (request.method !== "PATCH") {
+          return new Response("Bad Request", { status: 405 });
+        }
+
+        return updateAvatar(request, env);
       }
       case "finish-mission": {
-        return finishMission(acitonRequest, env);
+        if (request.method !== "PATCH") {
+          return new Response("Bad Request", { status: 405 });
+        }
+
+        return finishMission(request, env);
       }
       default: {
         return new Response("Bad Request", { status: 500 });
