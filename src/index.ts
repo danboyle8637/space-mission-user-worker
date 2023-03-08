@@ -1,4 +1,5 @@
 import {
+  createUser,
   getUser,
   activateMission,
   updateAvatar,
@@ -17,6 +18,13 @@ export default {
       (url.pathname.split("/").pop() as Actions) || "";
 
     switch (workerAction) {
+      case "create-user": {
+        if (request.method !== "POST") {
+          return new Response("Bad Request", { status: 405 });
+        }
+
+        return createUser(request, env);
+      }
       case "get-user": {
         if (request.method !== "POST") {
           return new Response("Bad Request", { status: 405 });

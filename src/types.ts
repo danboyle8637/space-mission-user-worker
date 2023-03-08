@@ -2,9 +2,11 @@ export interface Env {
   SUPA_DB_URL: string;
   SUPA_DB_KEY: string;
   SUPA_ACESS_TOKEN: string;
+  NEON_DATABASE: string;
 }
 
 export type Actions =
+  | "create-user"
   | "get-user"
   | "update-user"
   | "activate-mission"
@@ -12,6 +14,11 @@ export type Actions =
   | "finish-mission";
 
 export type MissionId = "mars" | "titan" | "pleiades" | "prodigious" | "x24c89";
+
+export interface CreateUserBody {
+  userId: string;
+  firstName: string;
+}
 
 export interface GetUserBody {
   userId: string;
