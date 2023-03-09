@@ -1,5 +1,5 @@
 import { Client } from "@neondatabase/serverless";
-import type { Env } from "./types";
+import type { Env, MissionId } from "./types";
 
 export class Users {
   env;
@@ -10,45 +10,65 @@ export class Users {
     this.db = new Client(this.env.NEON_DATABASE);
   }
 
-  async createTable() {
-    await this.db.connect();
-    await this.db.query(`
-      CREATE TABLE IF NOT EXISTS users (
-        id SERIAL,
-        created_at INTEGER NOT NULL,
-        user_id VARCHAR(255) NOT NULL UNIQUE,
-        first_name VARCHAR(60) NOT NULL,
-        active_mission_id VARCHAR(20) NULL,
-        avatar_url VARCHAR(255) NULL,
-        PRIMARY KEY (id)
-      );
-    `);
-
-    await this.db.end();
-
-    return "Table Created";
-  }
-
-  async createUser(userId: string, firstName: string) {
-    const now = Date.now();
-
+  async createUser(userId: string, firstName: string, callSign?: string) {
     await this.db.connect();
 
     const user = await this.db.query(`
       INSERT INTO users 
       (created_at, user_id, first_name)
       VALUES (
-        '${now}',
         '${userId}',
-        '${firstName}'
+        '${firstName}',
+        '${callSign ? callSign : null}'
       )
-      RETURNING user_id, first_name;
+      RETURNING user_id, first_name, call_sign;
     `);
-
-    console.log(JSON.stringify(user.rows));
 
     await this.db.end();
 
     return user.rows;
   }
+
+  async getUser(userId: string) {
+    await this.db.connect();
+
+    const user = await this.db.query(`
+      SELECT
+        first_name, 
+        call_sign,
+        active_mission_id,
+        avatar_url 
+      FROM users WHERE user_id = '${userId}';
+    `);
+
+    await this.db.end();
+
+    return user.rows;
+  }
+
+  async activateMission(userId: string, missionId: MissionId) {
+    await this.db.connect();
+
+    const missionStats = await this.db.query(`
+      BEGIN;
+
+      UPDATE users
+          SET active_mission_id = '${missionId}'
+          WHERE user_id = '${userId}'
+          RETURNING active_mission_id;
+      
+      INSERT INTO mission_stats
+          (user_id, mission_id, status)
+      VALUES ('${userId}', '${missionId}', 'active')
+      RETURNING status, is_goal1_complete, is_goal2_complete, is_goal3_complete;
+      
+      COMMIT;
+    `);
+
+    await this.db.end();
+
+    return missionStats;
+  }
+
+  async finishMission(userId: string, missionId: MissionId) {}
 }

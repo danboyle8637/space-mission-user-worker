@@ -17,20 +17,6 @@ export async function createUser(
   }
 
   try {
-    // const supaUser = await db(env).from("users").insert({
-    //   user_id: userId,
-    //   first_name: firstName,
-    //   call_sign: "Tester",
-    // });
-
-    // if (supaUser.error) {
-    //   throw new Error("Supabase could not compute: ");
-    // }
-
-    // console.log("Supabase: ", supaUser);
-
-    // NEON Database
-
     const users = new Users(env);
 
     const user = await users.createUser(userId, firstName);

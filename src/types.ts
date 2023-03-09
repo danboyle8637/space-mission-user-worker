@@ -3,6 +3,7 @@ export interface Env {
   SUPA_DB_KEY: string;
   SUPA_ACESS_TOKEN: string;
   NEON_DATABASE: string;
+  NEON_DATABASE_PASSWORD: string;
 }
 
 export type Actions =

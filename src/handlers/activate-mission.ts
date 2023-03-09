@@ -1,3 +1,4 @@
+import { Users } from "../Users";
 import { db } from "../helpers/supabase";
 import { getErrorMessage } from "../helpers/worker";
 import type { Env, ActivateMissionBody } from "../types";
