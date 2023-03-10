@@ -1,6 +1,7 @@
+import { Users } from "../Users";
 import { db } from "../helpers/supabase";
 import { getErrorMessage } from "../helpers/worker";
-import type { Env, FinishMissionBody } from "../types";
+import type { Env, FinishMissionBody, MissionId } from "../types";
 
 export async function finishMission(
   request: Request,
@@ -9,29 +10,25 @@ export async function finishMission(
   const formattedReq = new Response(request.body);
   const body: FinishMissionBody = await formattedReq.json();
 
-  const { userId } = body;
+  const { userId, missionId, missionStatus } = body;
 
-  if (!userId) {
+  if (!userId || !missionId || missionStatus) {
     const response = new Response("Bad Request", { status: 500 });
     return response;
   }
 
   try {
-    const updateRes = await db(env)
-      .from("users")
-      .update({ active_mission_id: null })
-      .eq("user_id", userId);
+    const users = new Users(env);
 
-    if (updateRes.status !== 204) {
-      throw new Error("Could not update user doc");
-    }
-
-    const response = new Response(
-      "Mission completed and removed from active mission",
-      {
-        status: 200,
-      }
+    const finishedMission = await users.finishMission(
+      userId,
+      missionId as MissionId,
+      missionStatus
     );
+
+    const response = new Response(JSON.stringify(finishedMission), {
+      status: 200,
+    });
     return response;
   } catch (error) {
     const response = new Response(getErrorMessage(error), { status: 500 });

@@ -15,12 +15,6 @@ export async function getUser(request: Request, env: Env): Promise<Response> {
   }
 
   try {
-    // const user = await db(env).from("users").select().eq("user_id", userId);
-
-    // if (user.error) {
-    //   throw Error("Could not fetch user");
-    // }
-
     const users = new Users(env);
 
     const user = await users.getUser(userId);

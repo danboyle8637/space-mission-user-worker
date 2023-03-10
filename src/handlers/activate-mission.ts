@@ -18,16 +18,19 @@ export async function activateMission(
   }
 
   try {
-    const updateRes = await db(env)
-      .from("users")
-      .update({ active_mission_id: missionId })
-      .eq("user_id", userId);
+    // const updateRes = await db(env)
+    //   .from("users")
+    //   .update({ active_mission_id: missionId })
+    //   .eq("user_id", userId);
 
-    if (updateRes.status !== 204) {
-      throw new Error("Could not update user doc");
-    }
+    // if (updateRes.status !== 204) {
+    //   throw new Error("Could not update user doc");
+    // }
+    const users = new Users(env);
 
-    const response = new Response("Mission activated and user doc updated", {
+    const activateMission = await users.activateMission(userId, missionId);
+
+    const response = new Response(JSON.stringify(activateMission), {
       status: 200,
     });
     return response;

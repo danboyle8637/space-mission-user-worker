@@ -4,6 +4,9 @@ export interface Env {
   SUPA_ACESS_TOKEN: string;
   NEON_DATABASE: string;
   NEON_DATABASE_PASSWORD: string;
+  PLANETSCALE_HOST: string;
+  PLANETSCALE_USERNAME: string;
+  PLANETSCALE_PASSWORD: string;
 }
 
 export type Actions =
@@ -16,9 +19,13 @@ export type Actions =
 
 export type MissionId = "mars" | "titan" | "pleiades" | "prodigious" | "x24c89";
 
+export type MissionStatus = "active" | "complete" | "cancelled";
+
 export interface CreateUserBody {
   userId: string;
   firstName: string;
+  emailAddress: string;
+  callSign: string;
 }
 
 export interface GetUserBody {
@@ -32,132 +39,6 @@ export interface ActivateMissionBody {
 
 export interface FinishMissionBody {
   userId: string;
-}
-
-export type Json =
-  | string
-  | number
-  | boolean
-  | null
-  | { [key: string]: Json }
-  | Json[];
-
-export interface Database {
-  public: {
-    Tables: {
-      accounts: {
-        Row: {
-          created_at: string;
-          email_address: string;
-          id: number;
-          user_id: string;
-        };
-        Insert: {
-          created_at?: string;
-          email_address?: string;
-          id?: number;
-          user_id?: string;
-        };
-        Update: {
-          created_at?: string;
-          email_address?: string;
-          id?: number;
-          user_id?: string;
-        };
-      };
-      finished_missions: {
-        Row: {
-          created_at: string | null;
-          id: number;
-          mission_id: string;
-          user_id: string;
-        };
-        Insert: {
-          created_at?: string | null;
-          id?: number;
-          mission_id: string;
-          user_id: string;
-        };
-        Update: {
-          created_at?: string | null;
-          id?: number;
-          mission_id?: string;
-          user_id?: string;
-        };
-      };
-      mission_stats: {
-        Row: {
-          created_at: string | null;
-          id: number;
-          is_goal1_complete: boolean | null;
-          is_goal2_complete: boolean | null;
-          is_goal3_complete: boolean | null;
-          mission_id: string;
-          status: string;
-          user_id: string;
-        };
-        Insert: {
-          created_at?: string | null;
-          id?: number;
-          is_goal1_complete?: boolean | null;
-          is_goal2_complete?: boolean | null;
-          is_goal3_complete?: boolean | null;
-          mission_id: string;
-          status: string;
-          user_id: string;
-        };
-        Update: {
-          created_at?: string | null;
-          id?: number;
-          is_goal1_complete?: boolean | null;
-          is_goal2_complete?: boolean | null;
-          is_goal3_complete?: boolean | null;
-          mission_id?: string;
-          status?: string;
-          user_id?: string;
-        };
-      };
-      users: {
-        Row: {
-          active_mission_id: string | null;
-          avatar_url: string | null;
-          call_sign: string;
-          created_at: string | null;
-          first_name: string;
-          id: number;
-          user_id: string;
-        };
-        Insert: {
-          active_mission_id?: string | null;
-          avatar_url?: string | null;
-          call_sign?: string;
-          created_at?: string | null;
-          first_name?: string;
-          id?: number;
-          user_id?: string;
-        };
-        Update: {
-          active_mission_id?: string | null;
-          avatar_url?: string | null;
-          call_sign?: string;
-          created_at?: string | null;
-          first_name?: string;
-          id?: number;
-          user_id?: string;
-        };
-      };
-    };
-    Views: {
-      [_ in never]: never;
-    };
-    Functions: {
-      [_ in never]: never;
-    };
-    Enums: {
-      [_ in never]: never;
-    };
-    CompositeTypes: {
-      [_ in never]: never;
-    };
-  };
+  missionId: string;
+  missionStatus: MissionStatus;
 }

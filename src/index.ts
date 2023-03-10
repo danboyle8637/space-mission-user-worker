@@ -33,7 +33,7 @@ export default {
         return getUser(request, env);
       }
       case "activate-mission": {
-        if (request.method !== "PATCH") {
+        if (request.method !== "POST") {
           return new Response("Bad Request", { status: 405 });
         }
 
@@ -47,7 +47,7 @@ export default {
         return updateAvatar(request, env);
       }
       case "finish-mission": {
-        if (request.method !== "PATCH") {
+        if (request.method !== "POST") {
           return new Response("Bad Request", { status: 405 });
         }
 

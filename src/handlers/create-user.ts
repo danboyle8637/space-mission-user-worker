@@ -9,9 +9,9 @@ export async function createUser(
 ): Promise<Response> {
   const formattedReq = new Response(request.body);
   const body: CreateUserBody = await formattedReq.json();
-  const { userId, firstName } = body;
+  const { userId, firstName, emailAddress, callSign } = body;
 
-  if (!userId || !firstName) {
+  if (!userId || !firstName || !emailAddress || !callSign) {
     const response = new Response("Bad Request", { status: 400 });
     return response;
   }
@@ -19,11 +19,14 @@ export async function createUser(
   try {
     const users = new Users(env);
 
-    const user = await users.createUser(userId, firstName);
+    const user = await users.createUser(
+      userId,
+      firstName,
+      emailAddress,
+      callSign
+    );
 
-    console.log("Neon: ", user);
-
-    const response = new Response("User Created", { status: 200 });
+    const response = new Response(JSON.stringify(user), { status: 200 });
     return response;
   } catch (error) {
     const response = new Response(getErrorMessage(error), { status: 500 });
