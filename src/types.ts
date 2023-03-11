@@ -39,6 +39,4 @@ export interface ActivateMissionBody {
 
 export interface FinishMissionBody {
   userId: string;
-  missionId: string;
-  missionStatus: MissionStatus;
 }

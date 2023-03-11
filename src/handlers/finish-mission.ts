@@ -1,5 +1,4 @@
 import { Users } from "../Users";
-import { db } from "../helpers/supabase";
 import { getErrorMessage } from "../helpers/worker";
 import type { Env, FinishMissionBody, MissionId } from "../types";
 
@@ -10,9 +9,9 @@ export async function finishMission(
   const formattedReq = new Response(request.body);
   const body: FinishMissionBody = await formattedReq.json();
 
-  const { userId, missionId, missionStatus } = body;
+  const { userId } = body;
 
-  if (!userId || !missionId || missionStatus) {
+  if (!userId) {
     const response = new Response("Bad Request", { status: 500 });
     return response;
   }
@@ -20,11 +19,7 @@ export async function finishMission(
   try {
     const users = new Users(env);
 
-    const finishedMission = await users.finishMission(
-      userId,
-      missionId as MissionId,
-      missionStatus
-    );
+    const finishedMission = await users.finishOrCancelMission(userId);
 
     const response = new Response(JSON.stringify(finishedMission), {
       status: 200,

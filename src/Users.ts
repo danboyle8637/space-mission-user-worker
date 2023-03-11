@@ -100,11 +100,7 @@ export class Users {
     return "Mission Activated";
   }
 
-  async finishMission(
-    userId: string,
-    missionId: MissionId,
-    missionStatus: MissionStatus
-  ) {
+  async finishOrCancelMission(userId: string) {
     const ps: Connection = connect(this.config);
 
     const updateUserQuery = `
@@ -113,39 +109,12 @@ export class Users {
       WHERE user_id = :userId;
     `;
 
-    const updateMissionStatsQuery = `
-      UPDATE mission_stats
-      SET status = 'cancelled'
-      WHERE user_id = :userId AND status = :missionStatus;
-    `;
-
-    const createFinishedMissionQuery = `
-      INSERT INTO finished_missions
-      (user_id, mission_id)
-      VALUES (:userId, :missionId);
-    `;
-
     const updateUserParams = {
       userId: userId,
     };
 
-    const updateMissionStatsParams = {
-      userId: userId,
-      missionStatus: missionStatus,
-    };
+    await ps.execute(updateUserQuery, updateUserParams);
 
-    const createFinishedMissionParams = {
-      userId: userId,
-      missionId: missionId,
-    };
-
-    await ps.transaction(async (tx) => {
-      await tx.execute(updateUserQuery, updateUserParams);
-      await tx.execute(updateMissionStatsQuery, updateMissionStatsParams);
-      await tx.execute(createFinishedMissionQuery, createFinishedMissionParams);
-      return;
-    });
-
-    return "Finished mission created";
+    return "User updated";
   }
 }
