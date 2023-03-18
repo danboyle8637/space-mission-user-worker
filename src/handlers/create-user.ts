@@ -1,5 +1,4 @@
 import { Users } from "../Users";
-import { db } from "../helpers/supabase";
 import { getErrorMessage } from "../helpers/worker";
 import type { Env, CreateUserBody } from "../types";
 
@@ -7,9 +6,12 @@ export async function createUser(
   request: Request,
   env: Env
 ): Promise<Response> {
+  const headers = request.headers;
+  const userId = headers.get("user");
+
   const formattedReq = new Response(request.body);
   const body: CreateUserBody = await formattedReq.json();
-  const { userId, firstName, emailAddress, callSign } = body;
+  const { firstName, emailAddress, callSign } = body;
 
   if (!userId || !firstName || !emailAddress || !callSign) {
     const response = new Response("Bad Request", { status: 400 });

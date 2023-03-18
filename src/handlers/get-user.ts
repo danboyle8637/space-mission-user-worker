@@ -1,13 +1,10 @@
 import { Users } from "../Users";
-import { db } from "../helpers/supabase";
 import { getErrorMessage } from "../helpers/worker";
-import type { Env, GetUserBody } from "../types";
+import type { Env } from "../types";
 
 export async function getUser(request: Request, env: Env): Promise<Response> {
-  const formattedReq = new Response(request.body);
-  const data: GetUserBody = await formattedReq.json();
-
-  const { userId } = data;
+  const headers = request.headers;
+  const userId = headers.get("user");
 
   if (!userId) {
     const response = new Response("Bad Request", { status: 500 });

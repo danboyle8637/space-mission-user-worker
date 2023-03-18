@@ -4,6 +4,7 @@ import {
   activateMission,
   updateAvatar,
   finishMission,
+  test,
 } from "./handlers";
 import type { Env, Actions } from "./types";
 
@@ -26,7 +27,7 @@ export default {
         return createUser(request, env);
       }
       case "get-user": {
-        if (request.method !== "POST") {
+        if (request.method !== "GET") {
           return new Response("Bad Request", { status: 405 });
         }
 
@@ -47,11 +48,18 @@ export default {
         return updateAvatar(request, env);
       }
       case "finish-mission": {
-        if (request.method !== "POST") {
+        if (request.method !== "GET") {
           return new Response("Bad Request", { status: 405 });
         }
 
         return finishMission(request, env);
+      }
+      case "test": {
+        if (request.method !== "POST") {
+          return new Response("Bad Request", { status: 405 });
+        }
+
+        return test(request, env);
       }
       default: {
         return new Response("Bad Request", { status: 500 });

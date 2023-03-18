@@ -68,6 +68,10 @@ export class Users {
 
     const result = await ps.execute(query, params);
 
+    // TODO - Check if the user has an active mission id
+    // TODO - If the user has an active mission id... get the mission id
+    // TODO - practice creating a procedure that uses if statement to grab the mission stats in one query as opposed to breaking it up in to two
+
     return result.rows[0];
   }
 

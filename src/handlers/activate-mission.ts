@@ -7,10 +7,13 @@ export async function activateMission(
   request: Request,
   env: Env
 ): Promise<Response> {
+  const headers = request.headers;
+  const userId = headers.get("user");
+
   const formattedReq = new Response(request.body);
   const body: ActivateMissionBody = await formattedReq.json();
 
-  const { userId, missionId } = body;
+  const { missionId } = body;
 
   if (!userId || !missionId) {
     const response = new Response("Bad Request", { status: 500 });
@@ -18,14 +21,6 @@ export async function activateMission(
   }
 
   try {
-    // const updateRes = await db(env)
-    //   .from("users")
-    //   .update({ active_mission_id: missionId })
-    //   .eq("user_id", userId);
-
-    // if (updateRes.status !== 204) {
-    //   throw new Error("Could not update user doc");
-    // }
     const users = new Users(env);
 
     const activateMission = await users.activateMission(userId, missionId);

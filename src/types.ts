@@ -15,21 +15,17 @@ export type Actions =
   | "update-user"
   | "activate-mission"
   | "update-avatar"
-  | "finish-mission";
+  | "finish-mission"
+  | "test";
 
 export type MissionId = "mars" | "titan" | "pleiades" | "prodigious" | "x24c89";
 
 export type MissionStatus = "active" | "complete" | "cancelled";
 
 export interface CreateUserBody {
-  userId: string;
   firstName: string;
   emailAddress: string;
   callSign: string;
-}
-
-export interface GetUserBody {
-  userId: string;
 }
 
 export interface ActivateMissionBody {

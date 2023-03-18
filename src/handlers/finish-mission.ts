@@ -6,10 +6,8 @@ export async function finishMission(
   request: Request,
   env: Env
 ): Promise<Response> {
-  const formattedReq = new Response(request.body);
-  const body: FinishMissionBody = await formattedReq.json();
-
-  const { userId } = body;
+  const headers = request.headers;
+  const userId = headers.get("user");
 
   if (!userId) {
     const response = new Response("Bad Request", { status: 500 });
