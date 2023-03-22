@@ -29,10 +29,24 @@ export interface CreateUserBody {
 }
 
 export interface ActivateMissionBody {
-  userId: string;
   missionId: MissionId;
 }
 
 export interface FinishMissionBody {
   userId: string;
+}
+
+export interface GetUserResponse {
+  first_name: string;
+  call_sign: string;
+  active_mission_id: MissionId | null;
+  avatar_url: string | null;
+}
+
+export interface UserDoc {
+  firstName: string;
+  activeMission: MissionId | null;
+  finishedMissions: any[];
+  callsign: string;
+  avatar: string | null;
 }

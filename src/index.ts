@@ -15,8 +15,7 @@ export default {
     ctx: ExecutionContext
   ): Promise<Response> {
     const url = new URL(request.url);
-    const workerAction: Actions =
-      (url.pathname.split("/").pop() as Actions) || "";
+    const workerAction: Actions = url.pathname.split("/").pop() as Actions;
 
     switch (workerAction) {
       case "create-user": {

@@ -1,6 +1,6 @@
 import { Users } from "../Users";
 import { getErrorMessage } from "../helpers/worker";
-import type { Env } from "../types";
+import type { Env, GetUserResponse } from "../types";
 
 export async function getUser(request: Request, env: Env): Promise<Response> {
   const headers = request.headers;
@@ -19,7 +19,10 @@ export async function getUser(request: Request, env: Env): Promise<Response> {
     const response = new Response(JSON.stringify(user), { status: 200 });
     return response;
   } catch (error) {
-    const response = new Response(getErrorMessage(error), { status: 500 });
+    const response = new Response(
+      `Failed to hit Planetscale: ${getErrorMessage(error)}`,
+      { status: 500 }
+    );
     return response;
   }
 }

@@ -1,5 +1,11 @@
 import { connect, Connection } from "@planetscale/database";
-import type { Env, MissionId, MissionStatus } from "./types";
+import type {
+  Env,
+  MissionId,
+  MissionStatus,
+  GetUserResponse,
+  UserDoc,
+} from "./types";
 
 export class Users {
   env;
@@ -57,32 +63,55 @@ export class Users {
   async getUser(userId: string) {
     const ps: Connection = await connect(this.config);
 
-    const query = `
+    const userQuery = `
       SELECT first_name, call_sign, active_mission_id, avatar_url 
       FROM users WHERE user_id = :userId;
     `;
 
-    const params = {
+    const finishedMissionQuery = `
+    SELECT mission_id FROM finished_missions WHERE user_id = :userId;
+    `;
+
+    const userParams = {
       userId: userId,
     };
 
-    const result = await ps.execute(query, params);
+    const finishedMissionParams = {
+      userId: userId,
+    };
 
-    // TODO - Check if the user has an active mission id
-    // TODO - If the user has an active mission id... get the mission id
-    // TODO - practice creating a procedure that uses if statement to grab the mission stats in one query as opposed to breaking it up in to two
+    const userDoc = await ps.transaction(async (tx) => {
+      const userData = await tx.execute(userQuery, userParams);
+      const finishedMissionsData = await tx.execute(
+        finishedMissionQuery,
+        finishedMissionParams
+      );
 
-    return result.rows[0];
+      const user = userData.rows[0] as GetUserResponse;
+      const finishedMissions = finishedMissionsData.rows;
+
+      const userDoc: UserDoc = {
+        firstName: user.first_name,
+        activeMission: user.active_mission_id,
+        finishedMissions: finishedMissions,
+        callsign: user.call_sign,
+        avatar: user.avatar_url,
+      };
+
+      return userDoc;
+    });
+
+    return userDoc;
   }
 
   async activateMission(userId: string, missionId: MissionId) {
     const ps: Connection = await connect(this.config);
 
     const updateUserQuery = `
-        UPDATE users
-        SET active_mission_id = :missionId
-        WHERE user_id = :userId;
-      `;
+      UPDATE users
+      SET active_mission_id = :missionId
+      WHERE user_id = :userId;
+    `;
 
     const createMissionStatsQuery = `
       INSERT INTO mission_stats
@@ -92,6 +121,10 @@ export class Users {
 
     const queryParams = {
       missionId: missionId,
+      userId: userId,
+    };
+
+    const getUserParams = {
       userId: userId,
     };
 

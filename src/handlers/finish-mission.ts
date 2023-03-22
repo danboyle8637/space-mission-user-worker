@@ -1,6 +1,6 @@
 import { Users } from "../Users";
 import { getErrorMessage } from "../helpers/worker";
-import type { Env, FinishMissionBody, MissionId } from "../types";
+import type { Env } from "../types";
 
 export async function finishMission(
   request: Request,
