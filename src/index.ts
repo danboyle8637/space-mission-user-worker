@@ -47,7 +47,7 @@ export default {
         return updateAvatar(request, env);
       }
       case "finish-mission": {
-        if (request.method !== "GET") {
+        if (request.method !== "PATCH") {
           return new Response("Bad Request", { status: 405 });
         }
 
