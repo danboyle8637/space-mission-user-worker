@@ -69,7 +69,7 @@ export class Users {
     `;
 
     const finishedMissionQuery = `
-    SELECT mission_id FROM finished_missions WHERE user_id = :userId;
+      SELECT mission_id FROM finished_missions WHERE user_id = :userId;
     `;
 
     const userParams = {
@@ -121,10 +121,6 @@ export class Users {
 
     const queryParams = {
       missionId: missionId,
-      userId: userId,
-    };
-
-    const getUserParams = {
       userId: userId,
     };
 

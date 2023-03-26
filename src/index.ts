@@ -5,6 +5,9 @@ import {
   updateAvatar,
   finishMission,
   test,
+  createDevSession,
+  getDevSession,
+  deleteDevSession,
 } from "./handlers";
 import type { Env, Actions } from "./types";
 
@@ -59,6 +62,27 @@ export default {
         }
 
         return test(request, env);
+      }
+      case "create-dev-session": {
+        if (request.method !== "POST") {
+          return new Response("Bad Request", { status: 403 });
+        }
+
+        return createDevSession(request, env);
+      }
+      case "get-dev-session": {
+        if (request.method !== "GET") {
+          return new Response("Bad Request", { status: 403 });
+        }
+
+        return getDevSession(request, env);
+      }
+      case "delete-dev-session": {
+        if (request.method !== "DELETE") {
+          return new Response("Bad Request", { status: 403 });
+        }
+
+        return deleteDevSession(request, env);
       }
       default: {
         return new Response("Bad Request", { status: 500 });

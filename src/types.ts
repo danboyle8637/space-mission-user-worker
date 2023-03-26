@@ -1,4 +1,7 @@
+import type { KVNamespace } from "@cloudflare/workers-types";
+
 export interface Env {
+  SPACE_MISSION_SESSIONS: KVNamespace;
   SUPA_DB_URL: string;
   SUPA_DB_KEY: string;
   SUPA_ACESS_TOKEN: string;
@@ -16,7 +19,10 @@ export type Actions =
   | "activate-mission"
   | "update-avatar"
   | "finish-mission"
-  | "test";
+  | "test"
+  | "create-dev-session"
+  | "get-dev-session"
+  | "delete-dev-session";
 
 export type MissionId = "mars" | "titan" | "pleiades" | "prodigious" | "x24c89";
 
@@ -49,4 +55,31 @@ export interface UserDoc {
   finishedMissions: any[];
   callsign: string;
   avatar: string | null;
+}
+
+export interface UserSessionReqBody {
+  uuid: string;
+  userId: string;
+  phoneId: string;
+  sessionToken: string;
+  sessionId: string;
+  expiresAt: string;
+}
+
+export interface DeleteUserSessionBody {
+  uuid: string;
+}
+
+export interface UserSession {
+  userId: string;
+  phoneId: string;
+  sessionToken: string;
+  sessionId: string;
+  expiresAt: string;
+}
+
+export interface UserSessionRes {
+  userId: string;
+  sessionId: string;
+  expiresAt: string;
 }
